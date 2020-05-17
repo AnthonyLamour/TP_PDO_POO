@@ -1,0 +1,83 @@
+/*choix du fond en fonction du compte*/
+#BODYDEFAULT{
+    
+	background:url(../Image/DefaultBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+#BODYADMIN{
+    
+	background:url(../Image/AdminBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+#BODYVELVET{
+    
+	background:url(../Image/VelvetBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+#BODYLAPHICET{
+    
+	background:url(../Image/LaphicetBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+#BODYEIZEN{
+    
+	background:url(../Image/EizenBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+#BODYROKUROU{
+    
+	background:url(../Image/RokurouBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+#BODYELEANOR{
+    
+	background:url(../Image/EleanorBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+#BODYMAGILOU{
+    
+	background:url(../Image/MagilouBackground.jpg) fixed no-repeat center;
+    background-size:100% 100%;
+    
+}
+
+/*Style du menu de login*/
+#LOG{
+ 
+    float:left;
+    width:15%;
+    height:15%;
+    background-color:white;
+    text-align:center;
+    border:5px solid black;
+    border-radius: 5% 5% 5% 5%;
+    overflow:auto;
+
+}
+
+/*Style du titre de la page*/
+h1{
+ 
+    margin-left:25%;
+    width:50%;
+    background-color:white;
+    text-align:center;
+    border:5px solid black;
+    border-radius: 5% 5% 5% 5%;
+    text-decoration:underline;
+    
+}

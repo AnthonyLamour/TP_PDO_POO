@@ -1,0 +1,47 @@
+insert into CUISINIER(NOM,MDP,STATUE)
+values ('admin','admin','admin'),
+('Velvet','laphi','client'),
+('Laphicet','compat','client'),
+('Eizen','edna','client'),
+('Rokurou','shigure','client'),
+('Eleanor','justice','client'),
+('Magilou','Bienfu','client');
+
+insert into PLAT(NOMPLAT,ID)
+values ('Dwarven Salisbury Surprise',4),
+('Lizard Tail Steak',4),
+('Berserker\'s Palmier',4),
+('Heavenly Fruit Parfait',4),
+('Three-Meat Ragu Sauce',2),
+('Fried Albatross',2),
+('Crowe\'s Special Quiche',2),
+('Chunky Potato Salad',2),
+('Mythic Egg and Rice Omelet',2),
+('Rappig and Tomato Stew',6),
+('Feline Emperor Ratatouille',6),
+('Orosoren Vichyssoise',6),
+('Garlic Rainbow Nautilus',6),
+('Wyvern Tendon Stew',5), 
+('Special Miso Hodgepodge',5),
+('Fresh Fish Pirate Platter',5),
+('Takoyaki',5), 
+('Mabo Curry Bun',3),
+('Mabo Curry',3),
+('Twin Shark Meuniere',3),
+('Zesty Dream Herring Marinade',3),
+('Fresh-Squeezed Normin Carrots',7),
+('Bazonga Veggie Bagna Cauda',7),
+('Crispy Stir-Fried Vegetables',7),
+('Barghest Paella',7);
+
+insert into REPAS(IDPLAT,ID,DATERAPAS)
+values (6,2,STR_TO_DATE("2020 January 01","%Y %M %d")),
+(20,2,STR_TO_DATE("2020 January 10","%Y %M %d")),
+(19,3,STR_TO_DATE("2020 January 15","%Y %M %d")),
+(5,3,STR_TO_DATE("2020 January 20","%Y %M %d")),
+(2,4,STR_TO_DATE("2020 February 18","%Y %M %d")),
+(13,4,STR_TO_DATE("2019 February 15","%Y %M %d")),
+(15,5,STR_TO_DATE("2020 February 14","%Y %M %d")),
+(1,5,STR_TO_DATE("2018 December 20","%Y %M %d")),
+(10,6,STR_TO_DATE("2018 December 20","%Y %M %d")),
+(5,6,STR_TO_DATE("2018 December 20","%Y %M %d"));
