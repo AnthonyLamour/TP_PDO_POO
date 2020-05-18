@@ -66,7 +66,34 @@
     border:5px solid black;
     border-radius: 5% 5% 5% 5%;
     overflow:auto;
+    clear:both;
 
+}
+
+/*Style du menu de choix d'action*/
+#CHOIXACTION{
+ 
+    float:left;
+    width:15%;
+    height:15%;
+    background-color:white;
+    text-align:center;
+    border:5px solid black;
+    border-radius: 5% 5% 5% 5%;
+    overflow:auto;
+    clear:both;
+    
+}
+
+/*Style du contenu principale de la page*/
+#CONTENUPRINCIPALE{
+    
+    margin-left:25%;
+    max-width:49%;
+    background-color:white;
+    text-align:center;
+    border:5px solid black;
+    
 }
 
 /*Style du titre de la page*/
@@ -80,4 +107,15 @@ h1{
     border-radius: 5% 5% 5% 5%;
     text-decoration:underline;
     
+}
+
+/*Style des tableaux*/
+table,td {
+    border: 1px solid #333;
+    margin:auto;
+}
+
+thead,tfoot {
+    background-color: #333;
+    color: #fff;
 }

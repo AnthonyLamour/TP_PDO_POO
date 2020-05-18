@@ -34,7 +34,7 @@ values ('Dwarven Salisbury Surprise',4),
 ('Crispy Stir-Fried Vegetables',7),
 ('Barghest Paella',7);
 
-insert into REPAS(IDPLAT,ID,DATERAPAS)
+insert into REPAS(IDPLAT,ID,DATEREPAS)
 values (6,2,STR_TO_DATE("2020 January 01","%Y %M %d")),
 (20,2,STR_TO_DATE("2020 January 10","%Y %M %d")),
 (19,3,STR_TO_DATE("2020 January 15","%Y %M %d")),

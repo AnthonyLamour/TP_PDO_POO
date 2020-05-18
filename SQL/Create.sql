@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS REPAS;
 Create table REPAS(IDREPAS   int not null AUTO_INCREMENT,
                    IDPLAT    int not null,
                    ID        int not null,
-                   DATERAPAS date not null,
+                   DATEREPAS date not null,
                 constraint REPASPK primary key (IDREPAS),
                 constraint REPASFK foreign key (IDPLAT) references PLAT(IDPLAT) ON DELETE CASCADE ON UPDATE CASCADE,
                 constraint REPASFK2 foreign key (ID) references CUISINIER(ID) ON DELETE CASCADE ON UPDATE CASCADE);
