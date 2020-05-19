@@ -3,10 +3,11 @@
     //début de session
     session_start();
     
-    //si l'utilisateur n'est pas connecté 
+    //si l'utilisateur ne tante pas de se connecter 
     if(!isset($_POST["Login"])){
+        //si l'utilisateur n'est pas connecté
         if(!isset($_SESSION["Acount"])){
-            //définition d'une équipe par défaut
+            //définition de l'utilisateur par défaut
             $_SESSION["Acount"]="none";
         }
     }
@@ -35,31 +36,51 @@
         
         $connexion=connect_bd();
         
+        //récupération de la liste des utilisateurs
         $sql="SELECT * FROM CUISINIER";
         
+        //si il y a une érreur
         if(!$connexion->query($sql)){
+            //affichage d'érreur à l'utilisateur
             echo("Problème d'accès au clients.");
-        }else{
+        }
+        //sinon
+        else
+        {
+            //initialisation du boolean Trouver à faux
             $Trouver=False;
+            //pour chaque résultat de la requète
             foreach($connexion->query($sql) as $row)
+                //si le nom correspond au login
                 if($_POST["Login"]==$row['NOM']){
+                    //si le mot de passe est correct
                     if($_POST["Password"]==$row['MDP']){
+                        //sauvegarde des données dans des variables de session
                         $_SESSION["ID"]=$row['ID'];
                         $_SESSION["Acount"]=$_POST['Login'];
                         $_SESSION["MDP"]=$_POST['Password'];
                         $_SESSION["STATUE"]=$row['STATUE'];
+                        //set de Trouver à vrai
                         $Trouver=True;
-                    }else{
+                    }
+                    //sinon
+                    else
+                    {
+                        //affichage d'érreur à l'utilisateur
                         echo("Mauvais mot de passe.");
                     }
                 }
+            //si l'utilisateur n'est pas trouvé
             if(!$Trouver){
+                //affichage d'érreur à l'utilisateur
                 echo("echec de la connexion.");
             }
         }
     }
     
+    //si l'utilisateur veut ajouté un plat
     if(isset($_POST["NomPlat"])){
+        //connexion à la base de données
         define('USER',"root");
         define('PASSWORD',"");
         define('SERVER',"localhost");
@@ -80,16 +101,24 @@
         }
         
         $connexion=connect_bd();
+        
+        //préparation de l'instruction
         $sql="insert into PLAT(NOMPLAT,ID)
               values ('".$_POST["NomPlat"]."',:id)";
         $stmt=$connexion->prepare($sql);
+        //ajout du paramètre id
         $stmt->bindParam(':id',$_SESSION["ID"]);
+        //exécution de l'instruction
         $stmt->execute();
+        //set de Message
         $Message="Votre plat a été ajouté avec succès.";  
+        //fermeture de la base
         $stmt->closeCursor();
     }
     
+    //si l'utilisateur veut ajouté un repas
     if(isset($_POST["PlatChoisi"])){
+        //connexion à la base de données
         define('USER',"root");
         define('PASSWORD',"");
         define('SERVER',"localhost");
@@ -110,15 +139,21 @@
         }
         
         $connexion=connect_bd();
+        //préparation de l'instruction
         $sql="insert into REPAS(IDPLAT,ID,DATEREPAS)
               values (".$_POST["PlatChoisi"].",".$_SESSION["ID"].",STR_TO_DATE(\"".str_replace("-"," ",$_POST["DateRepas"])."\",\"%Y %m %d\"));";
         $stmt=$connexion->prepare($sql);
+        //exécution de l'instruction
         $stmt->execute();
+        //set de Message
         $Message="Votre Repas a été ajouté avec succès.";  
+        //fermeture de la base
         $stmt->closeCursor();
     }
     
+    //si l'utilisateur veut supprimer un repas
     if(isset($_POST["RepasChoisi"])){
+        //connexion à la base de données
         define('USER',"root");
         define('PASSWORD',"");
         define('SERVER',"localhost");
@@ -139,16 +174,23 @@
         }
         
         $connexion=connect_bd();
+        //préparation de l'instruction
         $sql="DELETE FROM REPAS
               WHERE IDREPAS=:id";
         $stmt=$connexion->prepare($sql);
+        //ajout du paramètre id
         $stmt->bindParam(':id',$_POST["RepasChoisi"]);
+        //exécution de l'instruction
         $stmt->execute();
+        //set de Message
         $Message="Votre Repas a été supprimé avec succès.";  
+        //fermeture de la base
         $stmt->closeCursor();
     }
     
+    //si l'utilisateur veut supprimer une recette
     if(isset($_POST["RecetteChoisi"])){
+        //connexion à la base de données
         define('USER',"root");
         define('PASSWORD',"");
         define('SERVER',"localhost");
@@ -169,12 +211,17 @@
         }
         
         $connexion=connect_bd();
+        //préparation de l'instruction
         $sql="DELETE FROM PLAT
               WHERE IDPLAT=:id";
         $stmt=$connexion->prepare($sql);
+        //ajout du paramètre id
         $stmt->bindParam(':id',$_POST["RecetteChoisi"]);
+        //exécution de l'instruction
         $stmt->execute();
+        //set de Message
         $Message="Votre recette a été supprimé avec succès.";  
+        //fermeture de la base
         $stmt->closeCursor();
     }
     
@@ -201,6 +248,7 @@
 
 <!--body-->
     <?php
+        //changement de l'id du body en fonction du compte pour le CSS
         switch($_SESSION["Acount"]){
             case "none":
                 echo("<body id=\"BODYDEFAULT\"");
@@ -247,7 +295,9 @@
         </form>
 
         <?php
+            //si un utilisateur est connecté
             if($_SESSION["Acount"]!="none"){
+               //ajout du formulaire d'action
                echo("<!--formulaire de choix d'action-->
                         <form action=\"#\" method=\"post\" id=\"CHOIXACTION\" name=\"ChoixAction\">
                             <!--Label de SELECTACTION-->
@@ -273,6 +323,7 @@
         <fieldset id="CONTENUPRINCIPALE">
             <legend>
                 <?php
+                    //ajout de la légende en fonction du formulaire sélectionné
                     if(!isset($_POST["SELECTACTION"])){
                         echo("aucun formulaire sélectionné");
                     }else{
@@ -286,6 +337,18 @@
                             case "AfficherDetails":
                                 echo("Affichage des détails de votre compte");
                                 break;
+                            case "AjoutRecettes":
+                                echo("Ajouter une recette");
+                                break;
+                            case "AjoutRepas":
+                                echo("Ajouter un repas");
+                                break;
+                            case "SupRecettes":
+                                echo("Supprimer une recette");
+                                break;
+                            case "SupRepas":
+                                echo("Supprimer un repas");
+                                break;
                             case "Deconnexion":
                                 echo("Déconnexion du compte");
                                 break;
@@ -296,19 +359,30 @@
             
             <p>
                 <?php
+                    //si un utilisateur est connecté
                     if($_SESSION["Acount"]!="none"){
+                        //affichage de la connexion
                         echo("<h2> Vous êtes connecté en temps que ".$_SESSION["Acount"].". </h2>");
-                    }else{
+                    }
+                    //sinon
+                    else
+                    {
+                        //précision qu'aucun utilisateur n'est connecté
                         echo("<h2> Vous n'êtes pas connecté. </h2>");
                     }
                     
+                    //si il y a un message
                     if(isset($Message)){
+                        //affichage du message
                         echo($Message);
                     }
                     
+                    //si une action a été sélectionné
                     if(isset($_POST["SELECTACTION"])){
+                        //création du contenu de la page en fonction de l'action
                         switch($_POST["SELECTACTION"]){
                             case "AfficherRecettes":
+                                //connexion à la base de données
                                 define('USER',"root");
                                 define('PASSWORD',"");
                                 define('SERVER',"localhost");
@@ -329,10 +403,14 @@
                                 }
                                 
                                 $connexion=connect_bd();
+                                //préparation de l'instruction
                                 $sql="SELECT * FROM PLAT WHERE ID=:id";
                                 $stmt=$connexion->prepare($sql);
+                                //ajout du paramètre id
                                 $stmt->bindParam(':id',$_SESSION["ID"]);
+                                //exécution de l'instruction
                                 $stmt->execute();
+                                //affichage du tableau de résultat
                                 echo("<table>
                                         <thead>
                                             <tr>
@@ -352,9 +430,11 @@
                                 }
                                 echo("</tbody>
                                     </table>");  
+                                //fermeture de la base
                                 $stmt->closeCursor();
                                 break;
                             case "AfficherRepas":
+                                //connexion à la base de données
                                 define('USER',"root");
                                 define('PASSWORD',"");
                                 define('SERVER',"localhost");
@@ -375,13 +455,17 @@
                                 }
                                 
                                 $connexion=connect_bd();
+                                //préparation de l'instruction
                                 $sql="SELECT REPAS.IDREPAS as NUM, PLAT.NOMPLAT as PLATC, REPAS.DATEREPAS as DATER, PLAT.ID as SPE
                                       FROM REPAS
                                       INNER JOIN PLAT ON REPAS.IDPLAT = PLAT.IDPLAT
                                       WHERE REPAS.ID=:id";
                                 $stmt=$connexion->prepare($sql);
+                                //ajout du paramètre id
                                 $stmt->bindParam(':id',$_SESSION["ID"]);
+                                //exécution de l'instruction
                                 $stmt->execute();
+                                //affichage du tableau de résultat
                                 echo("<table>
                                         <thead>
                                             <tr>
@@ -409,9 +493,11 @@
                                 }
                                 echo("</tbody>
                                     </table>");  
+                                //fermeture de la base
                                 $stmt->closeCursor();
                                 break;
                             case "AfficherDetails":
+                                //connexion à la base de données
                                 define('USER',"root");
                                 define('PASSWORD',"");
                                 define('SERVER',"localhost");
@@ -432,12 +518,16 @@
                                 }
                                 
                                 $connexion=connect_bd();
+                                //préparation de l'instruction
                                 $sql="SELECT *
                                       FROM CUISINIER
                                       WHERE ID=:id";
                                 $stmt=$connexion->prepare($sql);
+                                //ajout du paramètre id
                                 $stmt->bindParam(':id',$_SESSION["ID"]);
+                                //exécution de l'instruction
                                 $stmt->execute();
+                                //affichage du tableau de résultat
                                 echo("<table>
                                         <thead>
                                             <tr>
@@ -461,9 +551,11 @@
                                 }
                                 echo("</tbody>
                                     </table>");  
+                                //fermeture de la base
                                 $stmt->closeCursor();
                                 break;
                             case "AjoutRecettes":
+                                //création du formulaire d'ajout de recette
                                 echo("<!--formulaire d'ajout de plat-->
                                         <form action=\"#\" method=\"post\" id=\"AJPLAT\" name=\"AjPlat\">
                                             <!--Label de NomPlat-->
@@ -476,6 +568,7 @@
                                         </form>");
                                 break;
                             case "AjoutRepas":
+                                //connexion à la base de données
                                 define('USER',"root");
                                 define('PASSWORD',"");
                                 define('SERVER',"localhost");
@@ -496,12 +589,16 @@
                                 }
                                 
                                 $connexion=connect_bd();
+                                //préparation de l'instruction
                                 $sql="SELECT IDPLAT, NOMPLAT
                                       FROM PLAT";
                                 $stmt=$connexion->prepare($sql);
+                                //ajout du paramètre id
                                 $stmt->bindParam(':id',$_SESSION["ID"]);
+                                //exécution de l'instruction
                                 $stmt->execute();
-                                echo("<!--formulaire d'ajout de plat-->
+                                //création du formulaire d'ajout de repas
+                                echo("<!--formulaire d'ajout de repas-->
                                         <form action=\"#\" method=\"post\" id=\"AJREPAS\" name=\"AjRepas\">
                                             <!--Label de PlatChoisi-->
                                             <p>Veuillez choisir un plat	:</p>
@@ -514,9 +611,11 @@
                                       <input type=\"date\" id=\"IDDATEREPAS\" name=\"DateRepas\" value=".date("Y-m-d")."><br/>
                                       <input type=\"submit\" value=\"Valider\" id=\"BOUTONAJREPAS\" name=\"boutonajrepas\" /><br/>
                                     </form>");
+                                //fermeture de la base
                                 $stmt->closeCursor();
                                 break;
                             case "SupRecettes":
+                                //connexion à la base de données
                                 define('USER',"root");
                                 define('PASSWORD',"");
                                 define('SERVER',"localhost");
@@ -537,11 +636,15 @@
                                 }
                                 
                                 $connexion=connect_bd();
+                                //préparation de l'instruction
                                 $sql="SELECT * FROM PLAT WHERE ID=:id";
                                 $stmt=$connexion->prepare($sql);
+                                //ajout du paramètre id
                                 $stmt->bindParam(':id',$_SESSION["ID"]);
+                                //exécution de l'instruction
                                 $stmt->execute();
-                                echo("<!--formulaire d'ajout de plat-->
+                                //création du formulaire de suppresion de recette
+                                echo("<!--formulaire de suppresion de recette-->
                                         <form action=\"#\" method=\"post\" id=\"SUPRECETTE\" name=\"SupRecette\">
                                             <!--Label de RecetteChoisi-->
                                             <p>Veuillez choisir un repas	:</p>
@@ -552,9 +655,11 @@
                                 echo(" </select><br/>
                                       <input type=\"submit\" value=\"Valider\" id=\"BOUTONSUPRECETTE\" name=\"boutonsuprecette\" /><br/>
                                     </form>");
+                                //fermeture de la base
                                 $stmt->closeCursor();
                                 break;
                             case "SupRepas":
+                                //connexion à la base de données
                                 define('USER',"root");
                                 define('PASSWORD',"");
                                 define('SERVER',"localhost");
@@ -575,14 +680,18 @@
                                 }
                                 
                                 $connexion=connect_bd();
+                                //préparation de l'instruction
                                 $sql="SELECT REPAS.IDREPAS as NUM, PLAT.NOMPLAT as PLATC, REPAS.DATEREPAS as DATER
                                       FROM REPAS
                                       INNER JOIN PLAT ON REPAS.IDPLAT = PLAT.IDPLAT
                                       WHERE REPAS.ID=:id";
                                 $stmt=$connexion->prepare($sql);
+                                //ajout du paramètre id
                                 $stmt->bindParam(':id',$_SESSION["ID"]);
+                                //exécution de l'instruction
                                 $stmt->execute();
-                                echo("<!--formulaire d'ajout de plat-->
+                                //création du formulaire de supression de repas
+                                echo("<!--formulaire de suppresion de repas-->
                                         <form action=\"#\" method=\"post\" id=\"SUPREPAS\" name=\"SupRepas\">
                                             <!--Label de RepasChoisi-->
                                             <p>Veuillez choisir un repas	:</p>
@@ -593,11 +702,15 @@
                                 echo(" </select><br/>
                                       <input type=\"submit\" value=\"Valider\" id=\"BOUTONSUPREPAS\" name=\"boutonsuprepas\" /><br/>
                                     </form>");
+                                //fermeture de la base
                                 $stmt->closeCursor();
                                 break;
                             case "Deconnexion":
+                                //affichage du message de déconnexion
                                 echo("Vous vous êtes déconnecté");
+                                //déconnexion de la session
                                 session_destroy();
+                                //reload de la page
                                 header("Refresh:0");
                                 break;
                         }
@@ -611,7 +724,9 @@
 
 <!--footer-->
 	<footer id="FOOTER" name="footer">
+        <!--créateur de la page-->
         <p>Anthony Lamour</p>
+        <!--jeu ayant servit d'inspiration pour ce site-->
         <p>Jeu de référence Tales Of Berseria</p>
 	</footer>
 
