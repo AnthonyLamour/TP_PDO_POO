@@ -59,6 +59,124 @@
         }
     }
     
+    if(isset($_POST["NomPlat"])){
+        define('USER',"root");
+        define('PASSWORD',"");
+        define('SERVER',"localhost");
+        define('BASE',"cli_com");
+        
+        function connect_bd(){
+        
+            $dsn="mysql:dbname=".BASE.";host=".SERVER;
+            
+            try{
+                $connexion=new PDO($dsn,USER,PASSWORD);
+            }catch(PDOException $e){
+                printf("echec de la connexion : %s\n", $e->getMessage());
+                exit();
+            }
+            return $connexion;
+        
+        }
+        
+        $connexion=connect_bd();
+        $sql="insert into PLAT(NOMPLAT,ID)
+              values ('".$_POST["NomPlat"]."',:id)";
+        $stmt=$connexion->prepare($sql);
+        $stmt->bindParam(':id',$_SESSION["ID"]);
+        $stmt->execute();
+        $Message="Votre plat a été ajouté avec succès.";  
+        $stmt->closeCursor();
+    }
+    
+    if(isset($_POST["PlatChoisi"])){
+        define('USER',"root");
+        define('PASSWORD',"");
+        define('SERVER',"localhost");
+        define('BASE',"cli_com");
+        
+        function connect_bd(){
+        
+            $dsn="mysql:dbname=".BASE.";host=".SERVER;
+            
+            try{
+                $connexion=new PDO($dsn,USER,PASSWORD);
+            }catch(PDOException $e){
+                printf("echec de la connexion : %s\n", $e->getMessage());
+                exit();
+            }
+            return $connexion;
+        
+        }
+        
+        $connexion=connect_bd();
+        $sql="insert into REPAS(IDPLAT,ID,DATEREPAS)
+              values (".$_POST["PlatChoisi"].",".$_SESSION["ID"].",STR_TO_DATE(\"".str_replace("-"," ",$_POST["DateRepas"])."\",\"%Y %m %d\"));";
+        $stmt=$connexion->prepare($sql);
+        $stmt->execute();
+        $Message="Votre Repas a été ajouté avec succès.";  
+        $stmt->closeCursor();
+    }
+    
+    if(isset($_POST["RepasChoisi"])){
+        define('USER',"root");
+        define('PASSWORD',"");
+        define('SERVER',"localhost");
+        define('BASE',"cli_com");
+        
+        function connect_bd(){
+        
+            $dsn="mysql:dbname=".BASE.";host=".SERVER;
+            
+            try{
+                $connexion=new PDO($dsn,USER,PASSWORD);
+            }catch(PDOException $e){
+                printf("echec de la connexion : %s\n", $e->getMessage());
+                exit();
+            }
+            return $connexion;
+        
+        }
+        
+        $connexion=connect_bd();
+        $sql="DELETE FROM REPAS
+              WHERE IDREPAS=:id";
+        $stmt=$connexion->prepare($sql);
+        $stmt->bindParam(':id',$_POST["RepasChoisi"]);
+        $stmt->execute();
+        $Message="Votre Repas a été supprimé avec succès.";  
+        $stmt->closeCursor();
+    }
+    
+    if(isset($_POST["RecetteChoisi"])){
+        define('USER',"root");
+        define('PASSWORD',"");
+        define('SERVER',"localhost");
+        define('BASE',"cli_com");
+        
+        function connect_bd(){
+        
+            $dsn="mysql:dbname=".BASE.";host=".SERVER;
+            
+            try{
+                $connexion=new PDO($dsn,USER,PASSWORD);
+            }catch(PDOException $e){
+                printf("echec de la connexion : %s\n", $e->getMessage());
+                exit();
+            }
+            return $connexion;
+        
+        }
+        
+        $connexion=connect_bd();
+        $sql="DELETE FROM PLAT
+              WHERE IDPLAT=:id";
+        $stmt=$connexion->prepare($sql);
+        $stmt->bindParam(':id',$_POST["RecetteChoisi"]);
+        $stmt->execute();
+        $Message="Votre recette a été supprimé avec succès.";  
+        $stmt->closeCursor();
+    }
     
 ?>
 
@@ -138,6 +256,10 @@
                                 <option value=\"AfficherRecettes\">Afficher vos recettes</option>
                                 <option value=\"AfficherRepas\">Afficher vos repas</option>
                                 <option value=\"AfficherDetails\">Afficher les détails du compte</option>
+                                <option value=\"AjoutRecettes\">Ajouter une recette</option>
+                                <option value=\"AjoutRepas\">Ajouter un repas</option>
+                                <option value=\"SupRecettes\">Supprimer une recette</option>
+                                <option value=\"SupRepas\">Supprimer un repas</option>
                                 <option value=\"Deconnexion\">Déconnexion</option>
                             </select><br/>
                             <input type=\"submit\" value=\"Valider\" id=\"BOUTONACTION\" name=\"boutonaction\" /><br/>
@@ -178,6 +300,10 @@
                         echo("<h2> Vous êtes connecté en temps que ".$_SESSION["Acount"].". </h2>");
                     }else{
                         echo("<h2> Vous n'êtes pas connecté. </h2>");
+                    }
+                    
+                    if(isset($Message)){
+                        echo($Message);
                     }
                     
                     if(isset($_POST["SELECTACTION"])){
@@ -335,6 +461,138 @@
                                 }
                                 echo("</tbody>
                                     </table>");  
+                                $stmt->closeCursor();
+                                break;
+                            case "AjoutRecettes":
+                                echo("<!--formulaire d'ajout de plat-->
+                                        <form action=\"#\" method=\"post\" id=\"AJPLAT\" name=\"AjPlat\">
+                                            <!--Label de NomPlat-->
+                                            <label for=\"NomPlat\">Nom du plat	:</label><br/>
+                                            <!--input de NomPlat-->
+                                            <input type=\"text\" id=\"IDNOMPLAT\" name=\"NomPlat\" size=\"40\" placeholder=\"Nom de votre plat en 40 lettres max\" required /><br/>
+                                            <!--Place des érreurs lié à NomPlat-->
+                                            <span id=\"SpanErreurNomPlat\"></span><br/>
+                                            <input type=\"button\" value=\"Valider\" id=\"BOUTONAJPLAT\" name=\"boutonajplat\" onclick=\"ValideInserPlat()\" /><br/>
+                                        </form>");
+                                break;
+                            case "AjoutRepas":
+                                define('USER',"root");
+                                define('PASSWORD',"");
+                                define('SERVER',"localhost");
+                                define('BASE',"cli_com");
+                                
+                                function connect_bd(){
+                                
+                                    $dsn="mysql:dbname=".BASE.";host=".SERVER;
+                                    
+                                    try{
+                                        $connexion=new PDO($dsn,USER,PASSWORD);
+                                    }catch(PDOException $e){
+                                        printf("echec de la connexion : %s\n", $e->getMessage());
+                                        exit();
+                                    }
+                                    return $connexion;
+                                
+                                }
+                                
+                                $connexion=connect_bd();
+                                $sql="SELECT IDPLAT, NOMPLAT
+                                      FROM PLAT";
+                                $stmt=$connexion->prepare($sql);
+                                $stmt->bindParam(':id',$_SESSION["ID"]);
+                                $stmt->execute();
+                                echo("<!--formulaire d'ajout de plat-->
+                                        <form action=\"#\" method=\"post\" id=\"AJREPAS\" name=\"AjRepas\">
+                                            <!--Label de PlatChoisi-->
+                                            <p>Veuillez choisir un plat	:</p>
+                                            <select name=\"PlatChoisi\">");
+                                while($res=$stmt->fetch(PDO::FETCH_ASSOC)){
+                                    echo("<option value=".$res["IDPLAT"].">".$res["NOMPLAT"]."</option>");
+                                }
+                                echo(" </select><br/>
+                                      <label for=\"DateRepas\">Date du repas:</label><br/>
+                                      <input type=\"date\" id=\"IDDATEREPAS\" name=\"DateRepas\" value=".date("Y-m-d")."><br/>
+                                      <input type=\"submit\" value=\"Valider\" id=\"BOUTONAJREPAS\" name=\"boutonajrepas\" /><br/>
+                                    </form>");
+                                $stmt->closeCursor();
+                                break;
+                            case "SupRecettes":
+                                define('USER',"root");
+                                define('PASSWORD',"");
+                                define('SERVER',"localhost");
+                                define('BASE',"cli_com");
+                                
+                                function connect_bd(){
+                                
+                                    $dsn="mysql:dbname=".BASE.";host=".SERVER;
+                                    
+                                    try{
+                                        $connexion=new PDO($dsn,USER,PASSWORD);
+                                    }catch(PDOException $e){
+                                        printf("echec de la connexion : %s\n", $e->getMessage());
+                                        exit();
+                                    }
+                                    return $connexion;
+                                
+                                }
+                                
+                                $connexion=connect_bd();
+                                $sql="SELECT * FROM PLAT WHERE ID=:id";
+                                $stmt=$connexion->prepare($sql);
+                                $stmt->bindParam(':id',$_SESSION["ID"]);
+                                $stmt->execute();
+                                echo("<!--formulaire d'ajout de plat-->
+                                        <form action=\"#\" method=\"post\" id=\"SUPRECETTE\" name=\"SupRecette\">
+                                            <!--Label de RecetteChoisi-->
+                                            <p>Veuillez choisir un repas	:</p>
+                                            <select name=\"RecetteChoisi\">");
+                                while($res=$stmt->fetch(PDO::FETCH_ASSOC)){
+                                    echo("<option value=".$res["IDPLAT"].">".$res["IDPLAT"]." ".$res["NOMPLAT"]."</option>");
+                                }
+                                echo(" </select><br/>
+                                      <input type=\"submit\" value=\"Valider\" id=\"BOUTONSUPRECETTE\" name=\"boutonsuprecette\" /><br/>
+                                    </form>");
+                                $stmt->closeCursor();
+                                break;
+                            case "SupRepas":
+                                define('USER',"root");
+                                define('PASSWORD',"");
+                                define('SERVER',"localhost");
+                                define('BASE',"cli_com");
+                                
+                                function connect_bd(){
+                                
+                                    $dsn="mysql:dbname=".BASE.";host=".SERVER;
+                                    
+                                    try{
+                                        $connexion=new PDO($dsn,USER,PASSWORD);
+                                    }catch(PDOException $e){
+                                        printf("echec de la connexion : %s\n", $e->getMessage());
+                                        exit();
+                                    }
+                                    return $connexion;
+                                
+                                }
+                                
+                                $connexion=connect_bd();
+                                $sql="SELECT REPAS.IDREPAS as NUM, PLAT.NOMPLAT as PLATC, REPAS.DATEREPAS as DATER
+                                      FROM REPAS
+                                      INNER JOIN PLAT ON REPAS.IDPLAT = PLAT.IDPLAT
+                                      WHERE REPAS.ID=:id";
+                                $stmt=$connexion->prepare($sql);
+                                $stmt->bindParam(':id',$_SESSION["ID"]);
+                                $stmt->execute();
+                                echo("<!--formulaire d'ajout de plat-->
+                                        <form action=\"#\" method=\"post\" id=\"SUPREPAS\" name=\"SupRepas\">
+                                            <!--Label de RepasChoisi-->
+                                            <p>Veuillez choisir un repas	:</p>
+                                            <select name=\"RepasChoisi\">");
+                                while($res=$stmt->fetch(PDO::FETCH_ASSOC)){
+                                    echo("<option value=".$res["NUM"].">".$res["NUM"]." ".$res["PLATC"]." ".$res["DATER"]."</option>");
+                                }
+                                echo(" </select><br/>
+                                      <input type=\"submit\" value=\"Valider\" id=\"BOUTONSUPREPAS\" name=\"boutonsuprepas\" /><br/>
+                                    </form>");
                                 $stmt->closeCursor();
                                 break;
                             case "Deconnexion":
